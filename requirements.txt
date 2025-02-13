@@ -9,7 +9,7 @@ sense-emu
 pisense
 
 # Imports for Chapter 06 and later
-paho-mqtt<2.0.0
+paho-mqtt<=2.1.0
 
 # Imports for Chapter 09 and later
 CoAPthon3
