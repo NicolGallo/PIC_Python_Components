@@ -238,7 +238,7 @@ class DeviceDataManager(IDataMessageListener):
 		"""
 		pass
 		
-	def _handleSensorDataAnalysis(self, resource = None, data=SensorData):
+	def _handleSensorDataAnalysis(self, data:SensorData, resource = None):
 		"""
 		Call this from handleSensorMessage() to determine if there's
 		any action to take on the message. Steps to take:
@@ -246,16 +246,16 @@ class DeviceDataManager(IDataMessageListener):
 		2) Act on data: If # 1 is true, determine what - if any - action is required, and execute.
 		"""
 
-		if self.handleTempChangeOnDevice and data.getTypeID == ConfigConst.TEMP_SENSOR_TYPE:
+		if self.handleTempChangeOnDevice and data.getTypeID() == ConfigConst.TEMP_SENSOR_TYPE:
 			logging.info("Handle temp change: %s - type ID: %s", str(self.handleTempChangeOnDevice),
-						 str(data.getTypeID))
+						 str(data.getTypeID()))
 
 			ad = ActuatorData(typeID=ConfigConst.HVAC_ACTUATOR_TYPE)
 
-			if data.getValue > self.triggerHvacTempCeiling:
+			if data.getValue() > self.triggerHvacTempCeiling:
 				ad.setCommand(ConfigConst.COMMAND_ON)
 				ad.setValue(self.triggerHvacTempCeiling)
-			elif data.getValue < self.triggerHvacTempFloor:
+			elif data.getValue() < self.triggerHvacTempFloor:
 				ad.setCommand(ConfigConst.COMMAND_ON)
 				ad.setValue(self.triggerHvacTempFloor)
 			else:
