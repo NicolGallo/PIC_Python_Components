@@ -21,7 +21,7 @@ class SensorData(BaseIotData):
 		super(SensorData, self).__init__(name = name, typeID = typeID, d = d)
 
 		self.value = ConfigConst.DEFAULT_VAL
-
+		self.sensorType = typeID
 	
 	def getSensorType(self) -> int:
 		"""
