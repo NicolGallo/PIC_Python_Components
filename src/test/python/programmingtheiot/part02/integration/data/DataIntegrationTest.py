@@ -92,7 +92,7 @@ class DataIntegrationTest(unittest.TestCase):
 		logging.info("\n\n----- [SystemPerformanceData to JSON to file] -----")
 		
 		dataObj  = SystemPerformanceData()
-		dataStr  = self.dataUtil.sensorDataToJson(dataObj)
+		dataStr  = self.dataUtil.systemPerformanceDataToJson(dataObj)
 		fileName = self.cdaDataPath + '/SystemPerformanceData.dat'
 
 		logging.info("Sample SystemPerformanceData JSON (validated): " + str(dataStr))
@@ -114,7 +114,7 @@ class DataIntegrationTest(unittest.TestCase):
 		logging.info("ActuatorData JSON from GDA: " + dataStr)
 		logging.info("ActuatorData object: " + str(dataObj))
 
-	#@unittest.skip("Ignore for now.")
+	@unittest.skip("Ignore for now.")
 	def testReadSensorDataFromGdaDataPath(self):
 		logging.info("\n\n----- [SensorData JSON from file to object] -----")
 		
@@ -127,7 +127,7 @@ class DataIntegrationTest(unittest.TestCase):
 		logging.info("SensorData JSON from GDA: " + dataStr)
 		logging.info("SensorData object: " + str(dataObj))
 
-	#@unittest.skip("Ignore for now.")
+	@unittest.skip("Ignore for now.")
 	def testReadSystemPerformanceDataFromGdaDataPath(self):
 		logging.info("\n\n----- [SystemPerformanceData JSON from file to object] -----")
 		

@@ -12,6 +12,7 @@ import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 
 import programmingtheiot.common.ConfigConst as ConfigConst
+from programmingtheiot.cda.system.SystemDiskUtilTask import SystemDiskUtilTask
 
 from programmingtheiot.common.ConfigUtil import ConfigUtil
 from programmingtheiot.common.IDataMessageListener import IDataMessageListener
@@ -45,13 +46,25 @@ class SystemPerformanceManager(object):
 
 		self.cpuUtilTask = SystemCpuUtilTask()
 		self.memUtilTask = SystemMemUtilTask()
+		self.diskUtilTask = SystemDiskUtilTask()
 
 	def handleTelemetry(self):
-		cpuUtilPct = self.cpuUtilTask.getTelemetryValue()
-		memUtilPct = self.memUtilTask.getTelemetryValue()
 
-		logging.debug('CPU utilization is %s percent, and memory utilization is %s percent.', str(cpuUtilPct), str(memUtilPct))
-		
+		self.cpuUtilPct = self.cpuUtilTask.getTelemetryValue()
+		self.memUtilPct = self.memUtilTask.getTelemetryValue()
+		self.diskUtilPct = self.diskUtilTask.getTelemetryValue()
+
+		logging.debug('CPU utilization is %s percent, MEMORY utilization is %s percent and DISK utilization is %s percent', str(self.cpuUtilPct), str(self.memUtilPct), str(self.diskUtilPct))
+
+		sysPerfData = SystemPerformanceData()
+		sysPerfData.setLocationID(self.locationID)
+		sysPerfData.setCpuUtilization(self.cpuUtilPct)
+		sysPerfData.setMemoryUtilization(self.memUtilPct)
+		sysPerfData.setDiskUtilization(self.diskUtilPct)
+
+		if self.dataMsgListener:
+			self.dataMsgListener.handleSystemPerformanceMessage(data=sysPerfData)
+
 	def setDataMessageListener(self, listener: IDataMessageListener):
 		if listener:
 			self.dataMsgListener = listener

@@ -49,6 +49,7 @@ class SystemPerformanceData(BaseIotData):
 		if data and isinstance(data, SystemPerformanceData):
 			self.cpuUtil = data.getCpuUtilization()
 			self.memUtil = data.getMemoryUtilization()
+			self.diskUtil = data.getDiskUtilization()
 
 	def __str__(self):
 		baseStr = super().__str__()
