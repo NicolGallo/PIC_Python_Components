@@ -24,7 +24,5 @@ class SystemDiskUtilTask(BaseSystemUtilTask):
         super(SystemDiskUtilTask, self).__init__(name=ConfigConst.DISK_UTIL_NAME, typeID=ConfigConst.DISK_UTIL_TYPE)
 
     def getTelemetryValue(self) -> float:
-        pass
-        #return psutil.disk_usage().percent
 
-    #TODO: Falta poner el parametro dentro del disk_usage para dar el valor esperado
+        return psutil.disk_usage('/').percent
