@@ -21,7 +21,7 @@ class SystemPerformanceManagerTest(unittest.TestCase):
 	SystemPerformanceManager. It should not be considered complete,
 	but serve as a starting point for the student implementing
 	additional functionality within their Programming the IoT
-	environment.
+	environment..
 	
 	NOTE: This test MAY require the sense_emu_gui to be running,
 	depending on whether or not the 'enableEmulator' flag is
