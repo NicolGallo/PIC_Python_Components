@@ -68,6 +68,8 @@ class MqttClientConnector(IPubSubClient):
 		if not clientID:
 			self.clientID = self.config.getProperty(ConfigConst.CONSTRAINED_DEVICE,
 													ConfigConst.DEVICE_LOCATION_ID_KEY)
+		else:
+			self.clientID = clientID
 
 		# TODO: be sure to validate the clientID!
 		logging.info('\tMQTT Client ID:   ' + self.clientID)
