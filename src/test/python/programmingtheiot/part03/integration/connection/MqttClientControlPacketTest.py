@@ -32,7 +32,7 @@ class MqttClientControlPacketTest(unittest.TestCase):
         # unique value for this test
         self.mcc = MqttClientConnector(clientID="ClientTestingTests")
 
-    @unittest.skip("Ignore for now.")
+    #@unittest.skip("Ignore for now.")
     def setUp(self):
         """
         # If client is already connected, it disconnects to start each test with a clean state.
@@ -42,7 +42,7 @@ class MqttClientControlPacketTest(unittest.TestCase):
         """
         pass
 
-    @unittest.skip("Ignore for now.")
+    #@unittest.skip("Ignore for now.")
     def tearDown(self):
         """
         # Stop every test if connection stay active
