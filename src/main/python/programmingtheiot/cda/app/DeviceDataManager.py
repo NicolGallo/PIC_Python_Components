@@ -38,14 +38,17 @@ class DeviceDataManager(IDataMessageListener):
 	def __init__(self):
 		self.configUtil = ConfigUtil()
 
-		self.enableSystemPerf =self.configUtil.getBoolean(section=ConfigConst.CONSTRAINED_DEVICE,
-														  key=ConfigConst.ENABLE_SYSTEM_PERF_KEY)
+		self.enableSystemPerf =self.configUtil.getBoolean(section = ConfigConst.CONSTRAINED_DEVICE,
+														  key = ConfigConst.ENABLE_SYSTEM_PERF_KEY)
 
-		self.enableSensing = self.configUtil.getBoolean(section=ConfigConst.CONSTRAINED_DEVICE,
-														key=ConfigConst.ENABLE_SENSING_KEY)
+		self.enableSensing = self.configUtil.getBoolean(section = ConfigConst.CONSTRAINED_DEVICE,
+														key = ConfigConst.ENABLE_SENSING_KEY)
 
 		self.enableMqttClient = self.configUtil.getBoolean(section = ConfigConst.CONSTRAINED_DEVICE,
 													 key = ConfigConst.ENABLE_MQTT_CLIENT_KEY)
+
+		self.enableCoapClient = self.configUtil.getBoolean(section = ConfigConst.CONSTRAINED_DEVICE,
+														   key = ConfigConst.ENABLE_COAP_CLIENT_KEY)
 
 		# NOTE: this can also be retrieved from the configuration file
 		self.enableActuation = True
@@ -63,22 +66,27 @@ class DeviceDataManager(IDataMessageListener):
 		if self.enableSystemPerf:
 			self.sysPerfMgr = SystemPerformanceManager()
 			self.sysPerfMgr.setDataMessageListener(self)
-			logging.info("Local system performance tracking enabled")
+			logging.info("Local System Performance tracking ENABLED")
 
 		if self.enableSensing:
 			self.sensorAdapterMgr = SensorAdapterManager()
 			self.sensorAdapterMgr.setDataMessageListener(self)
-			logging.info("Local sensor tracking enabled")
+			logging.info("Local Sensor tracking ENABLED")
 
 		if self.enableActuation:
 			self.actuatorAdapterMgr = ActuatorAdapterManager()
 			self.actuatorAdapterMgr.setDataMessageListener(self)
-			logging.info("Local actuation capabilities enabled")
+			logging.info("Local Actuator capabilities ENABLED")
 
 		if self.enableMqttClient:
 			self.mqttClient = MqttClientConnector()
 			self.mqttClient.setDataMessageListener(self)
-			logging.info("Local MQTT Client capabilities enabled")
+			logging.info("Local MQTT Client capabilities ENABLED")
+
+		if self.enableCoapClient:
+			self.coapClient = CoapClientConnector(dataMsgListener = self)
+			logging.info("Local CoAP Client capabilities ENABLED")
+
 
 		self.handleTempChangeOnDevice = self.configUtil.getBoolean(ConfigConst.CONSTRAINED_DEVICE,
 																   ConfigConst.HANDLE_TEMP_CHANGE_ON_DEVICE_KEY)
