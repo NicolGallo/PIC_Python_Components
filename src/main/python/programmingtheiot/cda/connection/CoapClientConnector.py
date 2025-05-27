@@ -81,9 +81,49 @@ class CoapClientConnector(IRequestResponseClient):
 
 	def sendDeleteRequest(self, resource: ResourceNameEnum = None, name: str = None, enableCON: bool = False, timeout: int = IRequestResponseClient.DEFAULT_TIMEOUT) -> bool:
 		logging.info("The method sendDeleteRequest has been called.")
-		return True
 
+		if resource or name:
+			resourcePath = self._createResourcePath(resource, name)
 
+			logging.info("Issuing Async DELETE to path: " + resourcePath)
+
+			asyncio.get_event_loop().run_until_complete(
+				self._handleDeleteRequest(
+					resourcePath=resourcePath,
+					enableCON=enableCON
+				)
+			)
+
+			return True
+
+		else:
+			logging.warning("Can't issue Async DELETE - no path or path list provided.")
+			return False
+
+	async def _handleDeleteRequest(self, resourcePath: str = None, enableCON: bool = False):
+		try:
+			msgType = NON
+
+			if enableCON:
+				msgType = CON
+
+			completed_uri = self.uriPath + resourcePath
+			msg = Message(mtype=msgType, code=Code.DELETE, uri=completed_uri)
+			req = self.coapClient.request(msg)
+			responseData = await req.response
+
+			self._onDeleteResponse(responseData)
+
+		except Exception as e:
+			logging.warning("Failed to process DELETE request for path: " + resourcePath)
+			traceback.print_exception(type(e), e, e.__traceback__)
+
+	def _onDeleteResponse(self, response):
+		if not response:
+			logging.warning('DELETE response invalid. Ignoring.')
+			return
+
+		logging.info('DELETE response received: %s', response.payload)
 
 
 	def sendGetRequest(self, resource: ResourceNameEnum = None, name: str = None, enableCON: bool = False, timeout: int = IRequestResponseClient.DEFAULT_TIMEOUT) -> bool:
