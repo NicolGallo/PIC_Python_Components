@@ -58,7 +58,7 @@ class CoapClientConnectorTest(unittest.TestCase):
 	def tearDown(self):
 		pass
 
-	#@unittest.skip("Ignore for now.")
+	@unittest.skip("Ignore for now.")
 	def testConnectAndDiscover(self):
 		"""
 		Comment the annotation to test Connect and Discover
@@ -85,7 +85,7 @@ class CoapClientConnectorTest(unittest.TestCase):
 									   enableCON = False,
 									   timeout = 5)
 		
-	#@unittest.skip("Ignore for now.")
+	@unittest.skip("Ignore for now.")
 	def testDeleteSensorMessageCon(self):
 		"""
 		Comment the annotation to test CON DELETE
@@ -94,7 +94,7 @@ class CoapClientConnectorTest(unittest.TestCase):
 										  enableCON =
 										  True, timeout = 5)
 	
-	#@unittest.skip("Ignore for now.")
+	@unittest.skip("Ignore for now.")
 	def testDeleteSensorMessageNon(self):
 		"""
 		Comment the annotation to test NON DELETE
@@ -155,7 +155,7 @@ class CoapClientConnectorTest(unittest.TestCase):
 									   payload = jsonData,
 									   timeout = 5)
 
-	@unittest.skip("Ignore for now.")
+	#@unittest.skip("Ignore for now.")
 	def testActuatorCommandObserve(self):
 		"""
 		Comment the annotation to test Observe

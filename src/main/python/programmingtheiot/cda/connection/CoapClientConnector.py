@@ -107,8 +107,7 @@ class CoapClientConnector(IRequestResponseClient):
 			if enableCON:
 				msgType = CON
 
-			completed_uri = self.uriPath + resourcePath
-			msg = Message(mtype=msgType, code=Code.DELETE, uri=completed_uri)
+			msg = Message(mtype=msgType, code=Code.DELETE, uri=resourcePath)
 			req = self.coapClient.request(msg)
 			responseData = await req.response
 
@@ -124,6 +123,7 @@ class CoapClientConnector(IRequestResponseClient):
 			return
 
 		logging.info('DELETE response received: %s', response.payload)
+
 
 
 	def sendGetRequest(self, resource: ResourceNameEnum = None, name: str = None, enableCON: bool = False, timeout: int = IRequestResponseClient.DEFAULT_TIMEOUT) -> bool:
@@ -150,8 +150,7 @@ class CoapClientConnector(IRequestResponseClient):
 			if enableCON:
 				msgType = CON
 
-			completed_uri = self.uriPath + resourcePath
-			msg = Message(mtype=msgType, code=Code.GET, uri=completed_uri)
+			msg = Message(mtype=msgType, code=Code.GET, uri=resourcePath)
 			req = self.coapClient.request(msg)
 			responseData = await req.response
 
@@ -228,8 +227,7 @@ class CoapClientConnector(IRequestResponseClient):
 			if payload:
 				payloadBytes = payload.encode('utf-8')
 
-			completed_uri = self.uriPath + resourcePath
-			msg = Message(mtype=msgType, payload=payloadBytes, code=Code.POST, uri=completed_uri)
+			msg = Message(mtype=msgType, payload=payloadBytes, code=Code.POST, uri=resourcePath)
 			req = self.coapClient.request(msg)
 			responseData = await req.response
 
@@ -245,6 +243,7 @@ class CoapClientConnector(IRequestResponseClient):
 			return
 
 		logging.info('POST response received: %s', response.payload)
+
 
 
 	def sendPutRequest(self, resource: ResourceNameEnum = None, name: str = None, enableCON: bool = False, payload: str = None, timeout: int = IRequestResponseClient.DEFAULT_TIMEOUT) -> bool:
@@ -282,8 +281,7 @@ class CoapClientConnector(IRequestResponseClient):
 			if payload:
 				payloadBytes = payload.encode('utf-8')
 
-			completed_uri = self.uriPath + resourcePath
-			msg = Message(mtype=msgType, payload=payloadBytes, code=Code.PUT, uri=completed_uri)
+			msg = Message(mtype=msgType, payload=payloadBytes, code=Code.PUT, uri=resourcePath)
 			req = self.coapClient.request(msg)
 			responseData = await req.response
 
@@ -311,13 +309,92 @@ class CoapClientConnector(IRequestResponseClient):
 			logging.warning("Attempted to set a null IDataMessageListener.")
 			return False
 
+
 	def startObserver(self, resource: ResourceNameEnum = None, name: str = None, ttl: int = IRequestResponseClient.DEFAULT_TTL) -> bool:
 		logging.info("The method startObserver has been called.")
-		return True
+
+		if resource or name:
+			resourcePath = self._createResourcePath(resource, name)
+
+			if resourcePath in self.observeRequests:
+				logging.warning("Already observing resource %s. Ignoring start observe request.", resourcePath)
+				return False
+
+			asyncio.get_event_loop().run_until_complete(
+				asyncio.ensure_future(self._handleStartObserveRequest(resourcePath))
+			)
+
+			return True
+
+		else:
+			logging.warning("Can't issue Async OBSERVE - GET - no path or path list provided.")
+			return False
+
+	async def _handleStartObserveRequest(self, resourcePath: str = None):
+		logging.info('Handle start observe invoked. Waiting for each input: ' + resourcePath)
+
+		msg = Message(code=Code.GET, uri=resourcePath, observe=0)
+		req = self.coapClient.request(msg)
+
+		self.observeRequests[resourcePath] = req
+
+		try:
+			responseData = await req.response
+
+			# TODO: validate response first
+			self._onGetResponse(responseData)
+
+			async for responseData in req.observation:
+				# TODO: validate response first
+				self._onGetResponse(responseData)
+
+				req.observation.cancel()
+				break
+
+		except Exception as e:
+			logging.warning("Failed to execute OBSERVE - GET. Recovering...")
+			traceback.print_exception(type(e), e, e.__traceback__)
+
+
 
 	def stopObserver(self, resource: ResourceNameEnum = None, name: str = None, timeout: int = IRequestResponseClient.DEFAULT_TIMEOUT) -> bool:
 		logging.info("The method stopObserver has been called.")
-		return True
+
+		if resource or name:
+			resourcePath = self._createResourcePath(resource, name)
+
+			if resourcePath not in self.observeRequests:
+				logging.warning("Resource %s not being observed. Ignoring stop observe request.", resourcePath)
+				return False
+
+			asyncio.get_event_loop().run_until_complete(
+				self._handleStopObserveRequest(resourcePath)
+			)
+
+			return True
+
+		else:
+			logging.warning("Can't cancel OBSERVE - GET - no path provided.")
+			return False
+
+	async def _handleStopObserveRequest(self, resourcePath: str = None, ignoreErr: bool = False):
+		if resourcePath in self.observeRequests:
+			logging.info('Handle stop observe invoked: ' + resourcePath)
+
+			try:
+				observeRequest = self.observeRequests[resourcePath]
+				observeRequest.observation.cancel()
+			except Exception as e:
+				if not ignoreErr:
+					logging.warning("Failed to cancel OBSERVE - GET: " + resourcePath)
+
+			try:
+				del self.observeRequests[resourcePath]
+			except Exception as e:
+				if not ignoreErr:
+					logging.warning("Failed to remove observable from list: " + resourcePath)
+		else:
+			logging.warning('Resource not currently under observation. Ignoring: ' + resourcePath)
 
 
 
@@ -342,7 +419,7 @@ class CoapClientConnector(IRequestResponseClient):
 
 
 	def _createResourcePath(self, resource: ResourceNameEnum = None, name: str = None):
-		resourcePath = ""
+		resourcePath = f"coap://{self.host}:{self.port}/"
 		hasResource = False
 
 		if resource:
