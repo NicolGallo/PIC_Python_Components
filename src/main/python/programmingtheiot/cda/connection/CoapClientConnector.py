@@ -152,13 +152,115 @@ class CoapClientConnector(IRequestResponseClient):
 
 
 
+
 	def sendPostRequest(self, resource: ResourceNameEnum = None, name: str = None, enableCON: bool = False, payload: str = None, timeout: int = IRequestResponseClient.DEFAULT_TIMEOUT) -> bool:
 		logging.info("The method sendPostRequest has been called.")
-		return True
+
+		if resource or name:
+			resourcePath = self._createResourcePath(resource, name)
+
+			logging.info("Issuing Async POST to path: " + resourcePath)
+
+			asyncio.get_event_loop().run_until_complete(
+				self._handlePostRequest(
+					resourcePath=resourcePath,
+					payload=payload,
+					enableCON=enableCON
+				)
+			)
+
+			return True
+
+		else:
+			logging.warning("Can't issue Async POST - no path or path list provided.")
+			return False
+
+	async def _handlePostRequest(self, resourcePath: str = None, payload: str = None, enableCON: bool = False):
+		try:
+			msgType = NON
+
+			if enableCON:
+				msgType = CON
+
+			payloadBytes = b''
+
+			# Decide which encoding to use - can also load from config
+			if payload:
+				payloadBytes = payload.encode('utf-8')
+
+			completed_uri = self.uriPath + resourcePath
+			msg = Message(mtype=msgType, payload=payloadBytes, code=Code.POST, uri=completed_uri)
+			req = self.coapClient.request(msg)
+			responseData = await req.response
+
+			self._onPostResponse(responseData)
+
+		except Exception as e:
+			logging.warning("Failed to process POST request for path: " + resourcePath)
+			traceback.print_exception(type(e), e, e.__traceback__)
+
+	def _onPostResponse(self, response):
+		if not response:
+			logging.warning('POST response invalid. Ignoring.')
+			return
+
+		logging.info('POST response received: %s', response.payload)
+
 
 	def sendPutRequest(self, resource: ResourceNameEnum = None, name: str = None, enableCON: bool = False, payload: str = None, timeout: int = IRequestResponseClient.DEFAULT_TIMEOUT) -> bool:
 		logging.info("The method sendPutRequest has been called.")
-		return True
+
+		if resource or name:
+			resourcePath = self._createResourcePath(resource, name)
+
+			logging.info("Issuing Async PUT to path: " + resourcePath)
+
+			asyncio.get_event_loop().run_until_complete(
+				self._handlePutRequest(
+					resourcePath=resourcePath,
+					payload=payload,
+					enableCON=enableCON
+				)
+			)
+
+			return True
+
+		else:
+			logging.warning("Can't issue Async PUT - no path or path list provided.")
+			return False
+
+	async def _handlePutRequest(self, resourcePath: str = None, payload: str = None, enableCON: bool = False):
+		try:
+			msgType = NON
+
+			if enableCON:
+				msgType = CON
+
+			payloadBytes = b''
+
+			# Decide which encoding to use - can also load from config
+			if payload:
+				payloadBytes = payload.encode('utf-8')
+
+			completed_uri = self.uriPath + resourcePath
+			msg = Message(mtype=msgType, payload=payloadBytes, code=Code.PUT, uri=completed_uri)
+			req = self.coapClient.request(msg)
+			responseData = await req.response
+
+			self._onPutResponse(responseData)
+
+		except Exception as e:
+			logging.warning("Failed to process PUT request for path: " + resourcePath)
+			traceback.print_exception(type(e), e, e.__traceback__)
+
+	def _onPutResponse(self, response):
+		if not response:
+			logging.warning('PUT response invalid. Ignoring.')
+			return
+
+		logging.info('PUT response received: %s', response.payload)
+
+
 
 	def setDataMessageListener(self, listener: IDataMessageListener = None) -> bool:
 		if listener:

@@ -103,7 +103,7 @@ class CoapClientConnectorTest(unittest.TestCase):
 										  enableCON = False,
 										  timeout = 5)
 
-	@unittest.skip("Ignore for now.")
+	#@unittest.skip("Ignore for now.")
 	def testPostSensorMessageCon(self):
 		"""
 		Comment the annotation to test CON POST
@@ -116,7 +116,7 @@ class CoapClientConnectorTest(unittest.TestCase):
 										payload = jsonData,
 										timeout = 5)
 	
-	@unittest.skip("Ignore for now.")
+	#@unittest.skip("Ignore for now.")
 	def testPostSensorMessageNon(self):
 		"""
 		Comment the annotation to test NON POST
@@ -129,7 +129,7 @@ class CoapClientConnectorTest(unittest.TestCase):
 										payload = jsonData,
 										timeout = 5)
 	
-	@unittest.skip("Ignore for now.")
+	#@unittest.skip("Ignore for now.")
 	def testPutSensorMessageCon(self):
 		"""
 		Comment the annotation to test CON PUT
@@ -142,7 +142,7 @@ class CoapClientConnectorTest(unittest.TestCase):
 									   payload = jsonData,
 									   timeout = 5)
 	
-	@unittest.skip("Ignore for now.")
+	#@unittest.skip("Ignore for now.")
 	def testPutSensorMessageNon(self):
 		"""
 		Comment the annotation to test NON PUT
