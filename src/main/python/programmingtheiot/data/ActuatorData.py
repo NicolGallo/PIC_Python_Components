@@ -69,7 +69,7 @@ class ActuatorData(BaseIotData):
 
 	def __str__(self):
 		baseStr = super().__str__()
-		actuatorStr = '{}, ActuatorData value = {}, ActuatorData command = {}, ActuatorData stateData = {}'.format(
+		actuatorStr = '{}\nActuatorData value = {}\nActuatorData command = {}\nActuatorData stateData = {}'.format(
 			baseStr,
 			self.value,
 			self.command,

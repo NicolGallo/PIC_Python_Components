@@ -87,6 +87,9 @@ class ActuatorAdapterManager(object):
 	def setDataMessageListener(self, listener: IDataMessageListener):
 		if listener:
 			self.dataMsgListener = listener
+			return True
+
+		return False
 
 	def _initEnvironmentalActuationTasks(self):
 		if not self.useEmulator:

@@ -58,8 +58,6 @@ class DeviceDataManager(IDataMessageListener):
 		self.actuatorAdapterMgr = None
 
 		self.mqttClient = None
-
-		# NOTE: The following aren't used until Part III but should be declared now
 		self.coapClient = None
 		self.coapServer = None
 
@@ -213,7 +211,12 @@ class DeviceDataManager(IDataMessageListener):
 
 		if data:
 			logging.debug("Incoming system performance message received (from sys perf manager): " + str(data))
+
+			self._handleUpstreamTransmission(resourceName = ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE,
+											 msg = DataUtil().systemPerformanceDataToJson(data))
+
 			return True
+
 		else:
 			logging.warning("Incoming system performance data is invalid (null). Ignoring.")
 			return False
@@ -235,8 +238,9 @@ class DeviceDataManager(IDataMessageListener):
 
 		if self.mqttClient:
 			self.mqttClient.connectClient()
-			self.mqttClient.subscribeToTopic(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE, callback=None,
-											 qos=ConfigConst.DEFAULT_QOS)
+			self.mqttClient.subscribeToTopic(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE,
+											 callback = None,
+											 qos = ConfigConst.DEFAULT_QOS)
 
 		logging.info("Started DeviceDataManager.")
 		
