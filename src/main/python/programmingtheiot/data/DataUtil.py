@@ -37,7 +37,11 @@ class DataUtil:
 			logging.debug("ActuatorData is null. Returning empty string.")
 			return ""
 
-		jsonData = self._generateJsonData(obj=data, useDecForFloat = useDecForFloat)
+		logging.debug("Encoding ActuatorData to JSON [pre] -->" + str(data))
+		jsonData = self._generateJsonData(obj = data,
+										  useDecForFloat = useDecForFloat)
+		logging.debug("Encoding ActuatorData to JSON [post] -->" + str(data))
+
 		return jsonData
 
 
@@ -48,7 +52,11 @@ class DataUtil:
 			logging.debug("SensorData is null. Returning empty string.")
 			return ""
 
-		jsonData = self._generateJsonData(obj=data, useDecForFloat = useDecForFloat)
+		logging.debug("Encoding SensorData to JSON [pre] -->" + str(data))
+		jsonData = self._generateJsonData(obj = data,
+										  useDecForFloat = useDecForFloat)
+
+		logging.debug("Encoding SensorData to JSON [post] -->" + str(data))
 		return jsonData
 
 
@@ -59,7 +67,11 @@ class DataUtil:
 			logging.debug("SystemPerformanceData is null. Returning empty string.")
 			return ""
 
-		jsonData = self._generateJsonData(obj = data, useDecForFloat = useDecForFloat)
+		logging.debug("Encoding SystemPerformanceData to JSON [pre] -->" + str(data))
+		jsonData = self._generateJsonData(obj = data,
+										  useDecForFloat = useDecForFloat)
+
+		logging.debug("Encoding SystemPerformanceData to JSON [post] -->" + str(data))
 		return jsonData
 
 
@@ -124,6 +136,7 @@ class DataUtil:
 
 		if self.encodeToUtf8:
 			jsonData = json.dumps(obj, cls = JsonDataEncoder).encode('utf8')
+
 		else:
 			jsonData = json.dumps(obj, cls = JsonDataEncoder, indent = 4)
 

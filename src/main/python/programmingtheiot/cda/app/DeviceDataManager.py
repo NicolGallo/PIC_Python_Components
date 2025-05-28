@@ -161,7 +161,8 @@ class DeviceDataManager(IDataMessageListener):
 			resourceName = ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE
 
 			# delegate to the transmit function any potential upstream comm's
-			self._handleUpstreamTransmission(resource=resourceName, msg=actuatorMsg)
+			self._handleUpstreamTransmission(resourceName = resourceName,
+											 msg = actuatorMsg)
 
 			return True
 		else:
@@ -194,6 +195,14 @@ class DeviceDataManager(IDataMessageListener):
 		if data:
 			logging.debug("Incoming sensor data received (from sensor manager): " + str(data))
 			self._handleSensorDataAnalysis(data)
+
+			# Convert the `SensorData` instance to JSON
+			jsonData = DataUtil().sensorDataToJson(data = data)
+
+			# Pass the resource and newly generated JSON data to `_handleUpstreamTransmission()`
+			self._handleUpstreamTransmission(resourceName = ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE,
+											 msg = jsonData)
+
 			return True
 		else:
 			logging.warning("Incoming sensor data is invalid (null). Ignoring.")
@@ -281,7 +290,7 @@ class DeviceDataManager(IDataMessageListener):
 			logging.info("Handle temp change: %s - type ID: %s", str(self.handleTempChangeOnDevice),
 						 str(data.getTypeID()))
 
-			ad = ActuatorData(typeID=ConfigConst.HVAC_ACTUATOR_TYPE)
+			ad = ActuatorData(typeID = ConfigConst.HVAC_ACTUATOR_TYPE)
 
 			if data.getValue() > self.triggerHvacTempCeiling:
 				ad.setCommand(ConfigConst.COMMAND_ON)
@@ -307,4 +316,15 @@ class DeviceDataManager(IDataMessageListener):
 		1) Check connection: Is there a client connection configured (and valid) to a remote MQTT or CoAP server?
 		2) Act on msg: If # 1 is true, send message upstream using one (or both) client connections.
 		"""
-		pass
+
+		logging.info("Upstream transmission invoked. Checking comm's integration.")
+
+		# NOTE: If using MQTT, the following will attempt to publish the message to the broker
+		if self.mqttClient:
+			if self.mqttClient.publishMessage(resource = resourceName,
+											  msg = msg):
+
+				logging.debug("Published incoming data to resource (MQTT): %s", str(resourceName))
+
+			else:
+				logging.warning("Failed to publish incoming data to resource (MQTT): %s", str(resourceName))

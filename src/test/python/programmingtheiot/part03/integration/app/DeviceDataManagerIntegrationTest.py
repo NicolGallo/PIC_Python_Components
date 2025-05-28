@@ -48,12 +48,14 @@ class DeviceDataManagerIntegrationTest(unittest.TestCase):
 	def tearDown(self):
 		pass
 
-	@unittest.skip("Ignore for now.")
+	#@unittest.skip("Ignore for now.")
 	def testDeviceDataMgrTimedIntegration(self):
+		# OPTION 1: For MQTT testing - be sure the MQTT client is enabled in `PiotConfig.props`.
+		# and your MQTT broker is running (as per the Setup instructions above).
 		ddMgr = DeviceDataManager()
 		ddMgr.startManager()
 		
-		sleep(60)
+		sleep(300)
 		
 		ddMgr.stopManager()
 		
