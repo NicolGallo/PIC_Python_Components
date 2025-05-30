@@ -59,13 +59,13 @@ class ActuatorAdapterManager(object):
 				aType = data.getTypeID()
 				responseData = None
 
-				if aType == ConfigConst.HUMIDIFIER_ACTUATOR_TYPE and self.humidifierActuator:
+				if (aType == ConfigConst.HUMIDIFIER_ACTUATOR_TYPE and self.humidifierActuator):
 					logging.info("Updating Humidifier Actuator with data: %s", data)
 					responseData = self.humidifierActuator.updateActuator(data)
-				elif aType == ConfigConst.HVAC_ACTUATOR_TYPE and self.hvacActuator:
+				elif (aType == ConfigConst.HVAC_ACTUATOR_TYPE and self.hvacActuator):
 					logging.info("Updating HVAC Actuator with data: %s", data)
 					responseData = self.hvacActuator.updateActuator(data)
-				elif aType == ConfigConst.LED_DISPLAY_ACTUATOR_TYPE and self.ledDisplayActuator:
+				elif (aType == ConfigConst.LED_DISPLAY_ACTUATOR_TYPE and self.ledDisplayActuator):
 					logging.info("Updating LED Display Actuator with data: %s", data)
 					responseData = self.ledDisplayActuator.updateActuator(data)
 				else:
