@@ -42,10 +42,11 @@ enableEmulator   = True
 enableSenseHAT   = True
 enableMqttClient = True
 enableCoapServer = False
-enableCoapClient = True
+enableCoapClient = False
 enableSystemPerformance = True
 enableSensing    = True
 enableLogging    = True
+enableRunForever = True
 pollCycleSecs    = 5
 testGdaDataPath  = /tmp/gda-data
 testCdaDataPath  = /tmp/cda-data
@@ -58,6 +59,10 @@ pressureSimFloor   =  990.0
 pressureSimCeiling = 1010.0
 tempSimFloor       =   15.0
 tempSimCeiling     =   25.0
+
+# added configuration limits for own sensor test about size of CO particles in air
+particlesSimFloor = 10.0
+particlesSimCeiling = 50.0
 
 # configurable limits for actuator triggers
 handleTempChangeOnDevice = True

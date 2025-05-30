@@ -19,6 +19,8 @@ from programmingtheiot.data.ActuatorData import ActuatorData
 
 from programmingtheiot.cda.sim.HvacActuatorSimTask import HvacActuatorSimTask
 from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
+from programmingtheiot.cda.sim.CoParticleActuatorSimTask import CoParticleActuatorSimTask
+
 
 class ActuatorAdapterManager(object):
 	"""
@@ -48,6 +50,12 @@ class ActuatorAdapterManager(object):
 		self.hvacActuator = None
 		self.ledDisplayActuator = None
 
+
+		###########################################################
+		#Own implementation
+		self.particleActuator = None
+		############################################################
+
 		self._initEnvironmentalActuationTasks()
 
 	def sendActuatorCommand(self, data: ActuatorData) -> bool:
@@ -60,14 +68,28 @@ class ActuatorAdapterManager(object):
 				responseData = None
 
 				if (aType == ConfigConst.HUMIDIFIER_ACTUATOR_TYPE and self.humidifierActuator):
+
 					logging.info("Updating Humidifier Actuator with data: %s", data)
 					responseData = self.humidifierActuator.updateActuator(data)
+
 				elif (aType == ConfigConst.HVAC_ACTUATOR_TYPE and self.hvacActuator):
+
 					logging.info("Updating HVAC Actuator with data: %s", data)
 					responseData = self.hvacActuator.updateActuator(data)
+
 				elif (aType == ConfigConst.LED_DISPLAY_ACTUATOR_TYPE and self.ledDisplayActuator):
+
 					logging.info("Updating LED Display Actuator with data: %s", data)
 					responseData = self.ledDisplayActuator.updateActuator(data)
+
+				########################################################################################################
+				#Own implementation
+				elif (aType == ConfigConst.CO_PARTICLE_ACTUATOR_TYPE and self.particleActuator):
+
+					logging.info("Updating CO PARTICLE Actuator with data: %s", data)
+					responseData = self.particleActuator.updateActuator(data)
+				########################################################################################################
+
 				else:
 					logging.warning("No valid actuator type. Ignoring actuation for type: %s", data.getTypeID())
 
@@ -99,6 +121,11 @@ class ActuatorAdapterManager(object):
 			# create the HVAC actuator
 			self.hvacActuator = HvacActuatorSimTask()
 
+			##################################################################
+			#Own implementation
+			self.particleActuator = CoParticleActuatorSimTask()
+			##################################################################
+
 		else:
 			hueModule = import_module('programmingtheiot.cda.emulated.HumidifierEmulatorTask', 'HumidiferEmulatorTask')
 			hueClazz = getattr(hueModule, 'HumidifierEmulatorTask')
@@ -114,3 +141,11 @@ class ActuatorAdapterManager(object):
 											'LedDisplayEmulatorTask')
 			leClazz = getattr(leDisplayModule, 'LedDisplayEmulatorTask')
 			self.ledDisplayActuator = leClazz()
+
+
+			############################################################################################################
+			# Own implementation
+			paeModule = import_module('programmingtheiot.cda.emulated.CoParticleEmulatorTask', 'CoParticleEmulatorTask')
+			paeClazz = getattr(paeModule, 'CoParticleEmulatorTask')
+			self.particleActuator = paeClazz()
+			############################################################################################################

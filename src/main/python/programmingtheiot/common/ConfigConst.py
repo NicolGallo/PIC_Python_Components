@@ -123,11 +123,23 @@ LED_ACTUATOR_NAME        = 'LedActuator'
 HUMIDIFIER_ACTUATOR_NAME = 'HumidifierActuator'
 HVAC_ACTUATOR_NAME       = 'HvacActuator'
 
+# ADDED NEW ACTUATOR NAME FOR OWN IMPLEMENTATION
+############################################################################
+CO_PARTICLE_ACTUATOR_NAME = 'CoParticleActuator'
+############################################################################
+
+
 HUMIDITY_SENSOR_NAME = 'HumiditySensor'
 PRESSURE_SENSOR_NAME = 'PressureSensor'
 TEMP_SENSOR_NAME     = 'TempSensor'
 SYSTEM_PERF_NAME     = 'SystemPerfMsg'
 CAMERA_SENSOR_NAME   = 'CameraSensor'
+
+# ADDED NEW SENSOR NAME FOR OWN IMPLEMENTATION
+############################################################################
+CO_PARTICLE_SENSOR_NAME = 'CoParticleSensor'
+############################################################################
+
 
 COMMAND_OFF = DEFAULT_COMMAND
 COMMAND_ON  = 1
@@ -141,9 +153,21 @@ ENV_DEVICE_TYPE           = 1000
 HVAC_ACTUATOR_TYPE        = 1001
 HUMIDIFIER_ACTUATOR_TYPE  = 1002
 
+# ADDED NEW ACTUATOR TYPE FOR OWN IMPLEMENTATION
+########################################################################
+CO_PARTICLE_ACTUATOR_TYPE = 7500
+########################################################################
+
+
 HUMIDITY_SENSOR_TYPE      = 1010
 PRESSURE_SENSOR_TYPE      = 1012
 TEMP_SENSOR_TYPE          = 1013
+
+# ADDED NEW SENSOR TYPE FOR OWN IMPLEMENTATION
+########################################################################
+CO_PARTICLE_SENSOR_TYPE   = 7777
+########################################################################
+
 
 DISPLAY_DEVICE_TYPE       = 2000
 LED_DISPLAY_ACTUATOR_TYPE = 2001
@@ -229,16 +253,16 @@ HOST_KEY             = 'host'
 PORT_KEY             = 'port'
 SECURE_PORT_KEY      = 'securePort'
 
-ROOT_CERT_ALIAS = 'root';
+ROOT_CERT_ALIAS = 'root'
 
-KEY_STORE_CLIENT_IDENTITY_KEY = 'keyStoreClientIdentity';
-KEY_STORE_SERVER_IDENTITY_KEY = 'keyStoreServerIdentity';
+KEY_STORE_CLIENT_IDENTITY_KEY = 'keyStoreClientIdentity'
+KEY_STORE_SERVER_IDENTITY_KEY = 'keyStoreServerIdentity'
 
-KEY_STORE_FILE_KEY    = 'keyStoreFile';
-KEY_STORE_AUTH_KEY    = 'keyStoreAuth';
-TRUST_STORE_FILE_KEY  = 'trustStoreFile';
-TRUST_STORE_ALIAS_KEY = 'trustStoreAlias';
-TRUST_STORE_AUTH_KEY  = 'trustStoreAuth';
+KEY_STORE_FILE_KEY    = 'keyStoreFile'
+KEY_STORE_AUTH_KEY    = 'keyStoreAuth'
+TRUST_STORE_FILE_KEY  = 'trustStoreFile'
+TRUST_STORE_ALIAS_KEY = 'trustStoreAlias'
+TRUST_STORE_AUTH_KEY  = 'trustStoreAuth'
 USER_NAME_TOKEN_KEY   = 'userToken'
 USER_AUTH_TOKEN_KEY   = 'authToken'
 API_TOKEN_KEY         = 'apiToken'
@@ -270,6 +294,13 @@ PRESSURE_SIM_FLOOR_KEY   = 'pressureSimFloor'
 PRESSURE_SIM_CEILING_KEY = 'pressureSimCeiling'
 TEMP_SIM_FLOOR_KEY       = 'tempSimFloor'
 TEMP_SIM_CEILING_KEY     = 'tempSimCeiling'
+
+# ADDED NEW KEYS FOR FLOOR AND CEILING VALUES
+########################################################################
+CO_PARTICLE_SIM_FLOOR_KEY   = 'particlesSimFloor'
+CO_PARTICLE_SIM_CEILING_KEY = 'particlesSimCeiling'
+########################################################################
+
 
 HANDLE_TEMP_CHANGE_ON_DEVICE_KEY = 'handleTempChangeOnDevice'
 TRIGGER_HVAC_TEMP_FLOOR_KEY   = 'triggerHvacTempFloor'

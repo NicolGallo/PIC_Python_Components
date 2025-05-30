@@ -13,25 +13,18 @@ import unittest
 import programmingtheiot.common.ConfigConst as ConfigConst
 
 from programmingtheiot.data.ActuatorData import ActuatorData
-from programmingtheiot.cda.sim.HumidifierActuatorSimTask import HumidifierActuatorSimTask
+from programmingtheiot.cda.sim.CoParticleActuatorSimTask import CoParticleActuatorSimTask
 
 
 class HumidifierActuatorSimTaskTest(unittest.TestCase):
-    """
-    This test case class contains very basic unit tests for
-    HumidifierActuatorSimTask. It should not be considered complete,
-    but serve as a starting point for the student implementing
-    additional functionality within their Programming the IoT
-    environment.
-    """
-    DEFAULT_VAL_A = 18.2
-    DEFAULT_VAL_B = 21.4
+    DEFAULT_VAL_A = 3.5
+    DEFAULT_VAL_B = 37.3
 
     @classmethod
     def setUpClass(self):
         logging.basicConfig(format='%(asctime)s:%(module)s:%(levelname)s:%(message)s', level=logging.DEBUG)
-        logging.info("Testing HumidifierActuatorSimTask class...")
-        self.hSimTask = HumidifierActuatorSimTask()
+        logging.info("Testing CoParticleActuatorSimTask class...")
+        self.paSimTask = CoParticleActuatorSimTask()
 
     def setUp(self):
         pass
@@ -40,11 +33,11 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
         pass
 
     def testUpdateActuator(self):
-        ad = ActuatorData(typeID=ConfigConst.HUMIDIFIER_ACTUATOR_TYPE)
+        ad = ActuatorData(typeID=ConfigConst.CO_PARTICLE_ACTUATOR_TYPE)
         ad.setCommand(ConfigConst.COMMAND_ON)
         ad.setValue(self.DEFAULT_VAL_A)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         self.assertEqual(adr.getValue(), self.DEFAULT_VAL_A)
@@ -52,7 +45,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
 
         ad.setValue(self.DEFAULT_VAL_B)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         self.assertEqual(adr.getValue(), self.DEFAULT_VAL_B)
@@ -60,7 +53,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
 
         ad.setCommand(ConfigConst.COMMAND_OFF)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         self.assertEqual(adr.getCommand(), ConfigConst.COMMAND_OFF)
@@ -68,13 +61,13 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
 
     @unittest.skip("Ignore for now.")
     def testUpdateActuatorRepeatCommands(self):
-        ad = ActuatorData(typeID=ConfigConst.HUMIDIFIER_ACTUATOR_TYPE)
+        ad = ActuatorData(typeID=ConfigConst.CO_PARTICLE_ACTUATOR_TYPE)
 
         # new command ON with new value - should succeed
         ad.setCommand(ConfigConst.COMMAND_ON)
         ad.setValue(self.DEFAULT_VAL_A)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         self.assertEqual(adr.getValue(), self.DEFAULT_VAL_A)
@@ -84,7 +77,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
         ad.setCommand(ConfigConst.COMMAND_ON)
         ad.setValue(self.DEFAULT_VAL_A)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNone(adr)
         logging.info("ActuatorData: " + str(adr))
@@ -93,7 +86,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
         ad.setCommand(ConfigConst.COMMAND_OFF)
         ad.setValue(self.DEFAULT_VAL_A)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         self.assertEqual(adr.getValue(), self.DEFAULT_VAL_A)
@@ -103,7 +96,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
         ad.setCommand(ConfigConst.COMMAND_OFF)
         ad.setValue(self.DEFAULT_VAL_B)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         logging.info("ActuatorData: " + str(adr))
@@ -112,7 +105,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
         ad.setCommand(ConfigConst.COMMAND_ON)
         ad.setValue(self.DEFAULT_VAL_B)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         logging.info("ActuatorData: " + str(adr))
@@ -121,7 +114,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
         ad.setCommand(ConfigConst.COMMAND_ON)
         ad.setValue(self.DEFAULT_VAL_A)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         logging.info("ActuatorData: " + str(adr))
@@ -130,7 +123,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
         ad.setCommand(ConfigConst.COMMAND_OFF)
         ad.setValue(self.DEFAULT_VAL_A)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNotNone(adr)
         self.assertEqual(adr.getValue(), self.DEFAULT_VAL_A)
@@ -140,7 +133,7 @@ class HumidifierActuatorSimTaskTest(unittest.TestCase):
         ad.setCommand(ConfigConst.COMMAND_OFF)
         ad.setValue(self.DEFAULT_VAL_A)
 
-        adr = self.hSimTask.updateActuator(ad)
+        adr = self.paSimTask.updateActuator(ad)
 
         self.assertIsNone(adr)
         logging.info("ActuatorData: " + str(adr))

@@ -49,7 +49,17 @@ class SensorDataGenerator(object):
 	
 	MIN_MONITOR_PRESSURE = DEFAULT_MIN_VALUE
 	MAX_MONITOR_PRESSURE = 50000.0
-	
+
+
+	# ADDED VALUES RANGE POR OWN SENSOR IMPLEMENTATION
+	######################################################################
+	MIN_ENV_PARTICLE = DEFAULT_MIN_VALUE
+	LOW_NORMAL_ENV_PARTICLE = 5.0
+	HI_NORMAL_ENV_PARTICLE = 20.0
+	MAX_ENV_PARTICLE = 100.0
+	######################################################################
+
+
 	DEFAULT_DATA_POINTS = 60 * MAX_HOURS
 	
 	NO_NOISE = 0
@@ -66,7 +76,12 @@ class SensorDataGenerator(object):
 	DEFAULT_TEMP_CURVE = FULL_WAVE
 	DEFAULT_HUMIDITY_CURVE = BELL_CURVE
 	DEFAULT_PRESSURE_CURVE = INVERSE_CURVE
-	
+
+	################################################################
+	DEFAULT_PARTICLE_CURVE = BELL_CURVE
+	################################################################
+
+
 	def __init__(self, epochOffsetSeconds: float = 0.0, useCurrentTime: bool = True, alignGeneratorToDay: bool = True):
 		"""
 		Constructor.
@@ -178,7 +193,29 @@ class SensorDataGenerator(object):
 		if minValue < self.MIN_MONITOR_TEMP or minValue >= maxValue: minValue = maxValue - 1
 		
 		return self.generateDailySensorDataSet(curveType = self.DEFAULT_TEMP_CURVE, noiseLevel = noiseLevel, minValue = minValue, maxValue = maxValue, startHour = 0, endHour = 24, useSeconds = useSeconds)
-		
+
+
+
+	####################################################################################################################
+	def generateDailyParticlesDataSet(self, noiseLevel: int = DEFAULT_NOISE, minValue: float = MIN_ENV_PARTICLE, maxValue: float = MAX_ENV_PARTICLE, useSeconds: bool = False):
+		"""
+		Generates a time-series data set for level of particles simulation over a 24-hour period.
+		"""
+
+		if maxValue < self.MIN_ENV_PARTICLE or maxValue > self.MAX_ENV_PARTICLE: maxValue = self.MAX_ENV_PARTICLE
+		if minValue < self.MIN_ENV_PARTICLE or minValue >= maxValue: minValue = maxValue - 1
+
+		return self.generateDailySensorDataSet(curveType = self.DEFAULT_PARTICLE_CURVE,
+											   noiseLevel = noiseLevel,
+											   minValue = minValue,
+											   maxValue = maxValue,
+											   startHour = 0,
+											   endHour = 24,
+											   useSeconds = useSeconds)
+
+	####################################################################################################################
+
+
 	def generateDailySensorDataSet(self, curveType: int = FULL_WAVE, noiseLevel: int = DEFAULT_NOISE, minValue: float = DEFAULT_MIN_VALUE, maxValue: float = DEFAULT_MAX_VALUE, startHour: int = MIN_HOURS, endHour: int = MAX_HOURS, useSeconds = False):
 		"""
 		Generates a time-series data set. This call will use the parameters to generate

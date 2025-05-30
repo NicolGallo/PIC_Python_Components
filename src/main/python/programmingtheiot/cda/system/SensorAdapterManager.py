@@ -23,6 +23,7 @@ from programmingtheiot.cda.sim.SensorDataGenerator import SensorDataGenerator
 from programmingtheiot.cda.sim.HumiditySensorSimTask import HumiditySensorSimTask
 from programmingtheiot.cda.sim.TemperatureSensorSimTask import TemperatureSensorSimTask
 from programmingtheiot.cda.sim.PressureSensorSimTask import PressureSensorSimTask
+from programmingtheiot.cda.sim.CoParticleSensorSImTask import CoParticleSensorSimTask
 
 class SensorAdapterManager(object):
 	"""
@@ -61,6 +62,11 @@ class SensorAdapterManager(object):
 		self.pressureAdapter = None
 		self.tempAdapter = None
 
+		#######################################################################
+		# Sensor adapter for own implementation
+		self.particleAdapter = None
+		#######################################################################
+
 		# see PIOT-CDA-03-006 description for thoughts on the next line of code
 		self._initEnvironmentalSensorTasks()
 
@@ -70,18 +76,41 @@ class SensorAdapterManager(object):
 		pressureData = self.pressureAdapter.generateTelemetry()
 		tempData = self.tempAdapter.generateTelemetry()
 
+		#####################################################################
+		# Definition of particleData for own sensor adapter
+		particleData = self.particleAdapter.generateTelemetry()
+		#####################################################################
+
 		humidityData.setLocationID(self.locationID)
 		pressureData.setLocationID(self.locationID)
 		tempData.setLocationID(self.locationID)
+
+		#####################################################################
+		# Own implementation
+		particleData.setLocationID(self.locationID)
+		#####################################################################
+
 
 		logging.debug('Generated humidity data: ' + str(humidityData))
 		logging.debug('Generated pressure data: ' + str(pressureData))
 		logging.debug('Generated temp data: ' + str(tempData))
 
+		#####################################################################
+		# Own implementation
+		logging.debug('Generated CO particle data: ' + str(particleData))
+		#####################################################################
+
+
 		if self.dataMsgListener:
 			self.dataMsgListener.handleSensorMessage(humidityData)
 			self.dataMsgListener.handleSensorMessage(pressureData)
 			self.dataMsgListener.handleSensorMessage(tempData)
+
+			#####################################################################
+			# Own implementation
+			self.dataMsgListener.handleSensorMessage(particleData)
+			#####################################################################
+
 		
 	def setDataMessageListener(self, listener: IDataMessageListener):
 		if listener:
@@ -132,6 +161,18 @@ class SensorAdapterManager(object):
 											   key = ConfigConst.TEMP_SIM_CEILING_KEY,
 											   defaultVal = SensorDataGenerator.HI_NORMAL_INDOOR_TEMP)
 
+		################################################################################################################
+		# Declaration of own particlesFloor and particlesCeiling defined at ConfigConst
+
+		particlesFloor = self.configUtil.getFloat(section = ConfigConst.CONSTRAINED_DEVICE,
+												  key = ConfigConst.CO_PARTICLE_SIM_FLOOR_KEY,
+												  defaultVal = SensorDataGenerator.LOW_NORMAL_ENV_PARTICLE)
+
+		particlesCeiling = self.configUtil.getFloat(section = ConfigConst.CONSTRAINED_DEVICE,
+													key = ConfigConst.CO_PARTICLE_SIM_CEILING_KEY,
+													defaultVal = SensorDataGenerator.HI_NORMAL_ENV_PARTICLE)
+
+		################################################################################################################
 		if not self.useEmulator:
 			self.dataGenerator = SensorDataGenerator()
 
@@ -147,9 +188,23 @@ class SensorAdapterManager(object):
 																				maxValue = tempCeiling,
 																				useSeconds = False)
 
+
+			#########################################################################################
+			# Own implementation
+			particleData = self.dataGenerator.generateDailyParticlesDataSet(minValue = particlesFloor,
+																			maxValue = particlesCeiling,
+																			useSeconds = False)
+			#######################################################################################
+
+
 			self.humidityAdapter = HumiditySensorSimTask(dataSet = humidityData)
 			self.pressureAdapter = PressureSensorSimTask(dataSet = pressureData)
 			self.tempAdapter     = TemperatureSensorSimTask(dataSet = tempData)
+
+			#############################################################################
+			# Own implementation
+			self.particleAdapter = CoParticleSensorSimTask(dataSet = particleData)
+			#############################################################################
 
 		else:
 			heModule = import_module('programmingtheiot.cda.emulated.HumiditySensorEmulatorTask',
@@ -166,3 +221,11 @@ class SensorAdapterManager(object):
 									 'TemperatureSensorEmulatorTask')
 			teClazz = getattr(teModule, 'TemperatureSensorEmulatorTask')
 			self.tempAdapter = teClazz()
+
+			#########################################################################################
+			# Own implementation
+			paModule = import_module('programmingtheiot.cda.emulated.CoParticleSensorEmulatorTask',
+									 'CoParticleSensorEmulatorTask')
+			paClazz = getattr(paModule, 'CoParticleSensorEmulatorTask')
+			self.particleAdapter = paClazz()
+			##########################################################################################
