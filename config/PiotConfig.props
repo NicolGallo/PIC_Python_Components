@@ -19,7 +19,7 @@ securePort     = 8883
 defaultQoS     = 0
 keepAlive      = 60
 enableAuth     = False
-enableCrypt    = False
+enableCrypt    = True
 
 #
 # CoAP client configuration information
@@ -42,7 +42,7 @@ enableEmulator   = True
 enableSenseHAT   = True
 enableMqttClient = True
 enableCoapServer = False
-enableCoapClient = False
+enableCoapClient = True
 enableSystemPerformance = True
 enableSensing    = True
 enableLogging    = True
@@ -60,7 +60,7 @@ pressureSimCeiling = 1010.0
 tempSimFloor       =   15.0
 tempSimCeiling     =   25.0
 
-# added configuration limits for own sensor test about size of CO particles in air
+# added configuration limits for own sensor test about ppm of CO particles in air
 particlesSimFloor = 10.0
 particlesSimCeiling = 50.0
 
